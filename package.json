@@ -1,0 +1,17 @@
+{
+  "name": "smog-saathi-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Smog Saathi AI — Explainable air pollution decision-support platform for families and communities",
+  "scripts": {
+    "dev": "concurrently -n API,ML,WEB -c cyan,magenta,green \"npm --prefix backend run dev\" \"npm run dev:ml\" \"npm --prefix frontend run dev\"",
+    "dev:ml": "cd ml-service && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload",
+    "build": "npm --prefix frontend run build",
+    "lint": "npm --prefix backend run lint && npm --prefix frontend run lint",
+    "test": "npm --prefix backend test && npm --prefix frontend test",
+    "install:all": "npm install && npm --prefix backend install && npm --prefix frontend install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

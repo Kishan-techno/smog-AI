@@ -1,0 +1,189 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f3f7ff;
+  --surface: rgba(255, 255, 255, 0.84);
+  --surface-strong: rgba(255, 255, 255, 0.96);
+  --border: rgba(79, 70, 229, 0.14);
+  --text: #090d1f;
+  --muted: #475569;
+  --accent: #0891b2;
+}
+
+.dark {
+  --bg: #030614;
+  --surface: rgba(11, 17, 42, 0.72);
+  --surface-strong: rgba(12, 19, 48, 0.92);
+  --border: rgba(56, 189, 248, 0.2);
+  --text: #f1f5ff;
+  --muted: #94a3b8;
+  --accent: #22d3ee;
+}
+
+html {
+  background-color: var(--bg);
+  color: var(--text);
+  scroll-behavior: auto;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+.glass-card {
+  background: var(--surface);
+  backdrop-filter: blur(20px) saturate(155%);
+  -webkit-backdrop-filter: blur(20px) saturate(155%);
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.16),
+    0 12px 34px -12px rgba(15, 23, 42, 0.35);
+}
+
+.glass-card-strong {
+  background: var(--surface-strong);
+  backdrop-filter: blur(24px) saturate(165%);
+  -webkit-backdrop-filter: blur(24px) saturate(165%);
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+    0 20px 48px -14px rgba(3, 6, 20, 0.55);
+}
+
+/* Eye-catching aurora telemetry grid */
+.hud-grid {
+  background-image:
+    linear-gradient(to right, rgba(34, 211, 238, 0.065) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(168, 85, 247, 0.055) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 85% 75% at 50% 18%, #000 42%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 18%, #000 42%, transparent 100%);
+}
+
+/* Futuristic dual-tone HUD corner brackets */
+.hud-corners {
+  position: relative;
+}
+.hud-corners::before,
+.hud-corners::after {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  pointer-events: none;
+  z-index: 20;
+}
+.hud-corners::before {
+  top: 8px;
+  left: 8px;
+  border-top: 2px solid rgba(34, 211, 238, 0.8);
+  border-left: 2px solid rgba(34, 211, 238, 0.8);
+  border-top-left-radius: 5px;
+}
+.hud-corners::after {
+  bottom: 8px;
+  right: 8px;
+  border-bottom: 2px solid rgba(168, 85, 247, 0.8);
+  border-right: 2px solid rgba(168, 85, 247, 0.8);
+  border-bottom-right-radius: 5px;
+}
+
+/* Animated aurora prism gradient border */
+.gradient-border-wrap {
+  position: relative;
+  border-radius: 1.25rem;
+  padding: 1.5px;
+  background: linear-gradient(
+    130deg,
+    rgba(34, 211, 238, 0.85),
+    rgba(99, 102, 241, 0.7),
+    rgba(168, 85, 247, 0.8),
+    rgba(236, 72, 153, 0.65),
+    rgba(45, 212, 191, 0.8)
+  );
+  background-size: 260% 260%;
+  animation: borderShift 6.5s ease infinite;
+  box-shadow: 0 0 32px -12px rgba(34, 211, 238, 0.4);
+}
+
+@keyframes borderShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* GPU-friendly ambient haze drift */
+@keyframes hazeDrift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(28px, -18px, 0) scale(1.06);
+  }
+}
+
+.ambient-haze {
+  animation: hazeDrift 18s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Floating atmospheric micro-particles */
+@keyframes particleFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate3d(14px, -28px, 0);
+    opacity: 0.8;
+  }
+}
+
+.particle-dot {
+  animation: particleFloat var(--dur, 12s) ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Radar sweep for station map */
+@keyframes radarSweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.radar-sweep {
+  animation: radarSweep 9s linear infinite;
+  will-change: transform;
+}
+
+/* Focus visibility for keyboard accessibility */
+:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-haze,
+  .gradient-border-wrap,
+  .particle-dot,
+  .radar-sweep {
+    animation: none !important;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+}
