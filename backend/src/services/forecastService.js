@@ -76,10 +76,16 @@ async function fetchHourlyHistory(city) {
 }
 
 async function callMlForecaster({ cityId, horizonHours, dataFreshness, history, weather }) {
+  if (!env.ML_SERVICE_URL) {
+    throw new Error('ML_SERVICE_URL not configured');
+  }
+  const mlBase = env.ML_SERVICE_URL.startsWith('http')
+    ? env.ML_SERVICE_URL.replace(/\/+$/, '')
+    : `https://${env.ML_SERVICE_URL.replace(/\/+$/, '')}`;
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 2500);
+  const timer = setTimeout(() => controller.abort(), 3500);
   try {
-    const res = await fetch(`${env.ML_SERVICE_URL}/forecast`, {
+    const res = await fetch(`${mlBase}/forecast`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

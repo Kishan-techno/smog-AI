@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: smog-saathi-ml
+    runtime: python
+    rootDir: ml-service
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+
+  - type: web
+    name: smog-saathi-api
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGOMS_DISABLE_POSTINSTALL
+        value: "1"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: WAQI_TOKEN
+        sync: false
+      - key: ML_SERVICE_URL
+        sync: false

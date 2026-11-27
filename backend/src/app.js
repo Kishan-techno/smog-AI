@@ -7,13 +7,31 @@ import { apiLimiter } from './middleware/rateLimiter.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { apiRouter } from './routes/index.js';
 
+function buildAllowedOrigins() {
+  const configured = env.FRONTEND_URL.split(',')
+    .map((u) => u.trim().replace(/\/+$/, ''))
+    .filter(Boolean);
+  return new Set([...configured, 'http://localhost:5173', 'http://127.0.0.1:5173']);
+}
+
 export function createApp() {
   const app = express();
+  const allowedOrigins = buildAllowedOrigins();
+
+  // Required behind Render / reverse proxies so express-rate-limit uses real client IP
+  app.set('trust proxy', 1);
 
   app.use(helmet());
   app.use(
     cors({
-      origin: [env.FRONTEND_URL, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+      origin(origin, callback) {
+        if (!origin) return callback(null, true);
+        const normalized = origin.replace(/\/+$/, '');
+        if (allowedOrigins.has(normalized)) {
+          return callback(null, true);
+        }
+        return callback(new Error(`CORS blocked origin: ${origin}`));
+      },
       credentials: true,
     })
   );
@@ -30,6 +48,14 @@ export function createApp() {
       });
     });
     next();
+  });
+
+  app.get('/', (_req, res) => {
+    res.json({
+      status: 'ok',
+      service: 'smog-saathi-api',
+      healthEndpoint: '/api/health',
+    });
   });
 
   app.use('/api', apiLimiter, apiRouter);

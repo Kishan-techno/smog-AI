@@ -100,3 +100,29 @@ python -m pytest -c ml-service/pytest.ini ml-service/tests
 # Frontend lint + Vitest + production build
 npm --prefix frontend run lint && npm --prefix frontend test && npm --prefix frontend run build
 ```
+
+---
+
+## Free Cloud Deployment (Vercel + Render + Optional MongoDB Atlas)
+
+Keep your app online **24/7 without keeping your laptop switched on** using genuinely free cloud tiers (no paid purchase required; subject to provider free-tier limits):
+
+1. **Backend + ML Service on Render (Free Blueprint — `render.yaml`)**:
+   - Open [Render Blueprint Deploy](https://render.com/deploy?repo=https://github.com/Kishan-techno/smog-AI) and sign in with GitHub.
+   - Render reads `render.yaml` and creates `smog-saathi-ml` (Python FastAPI) + `smog-saathi-api` (Node/Express).
+   - Set `FRONTEND_URL` once your Vercel frontend URL is created (comma-separated URLs supported).
+   - Optional: add `MONGODB_URI` (from MongoDB Atlas M0 Free) and `GEMINI_API_KEY` / `WAQI_TOKEN` directly inside Render's **Environment** panel — never commit `.env` or secrets to GitHub.
+
+2. **Frontend on Vercel (Hobby Free — `frontend/vercel.json`)**:
+   - Import `Kishan-techno/smog-AI` in [Vercel New Project](https://vercel.com/new), set **Root Directory** to `frontend`, Framework **Vite**.
+   - Add Environment Variable: `VITE_API_BASE_URL=https://<your-render-api>.onrender.com/api`.
+   - Deploy and copy the generated `https://...vercel.app` URL back into Render's `FRONTEND_URL` env var.
+
+3. **Free-Plan Limitations**:
+   - **Render Free** sleeps after **15 minutes of inactivity** (~30–50s wake-up delay on first request) and shares **750 free instance hours/month** across services.
+   - **Vercel Hobby** is for personal/non-commercial projects (~100 GB bandwidth/month).
+   - If `MONGODB_URI` is omitted, user/routine state runs in-memory and resets whenever Render restarts/sleeps. Free plans are not guaranteed forever.
+
+4. **Future Updates**:
+   - Push changes to `main` (`git add . && git commit -m "..." && git push origin main`) — both Vercel and Render auto-redeploy.
+
